@@ -268,11 +268,6 @@ class Goblin(Organism):
 
 
 class Room():
-    wall_list = None
-    coins_list = None
-    goblins = None
-    ogre = None
-    movingsprites = None
     starvation_deaths = 0
     age_deaths = 0
     death_ages = []
@@ -292,10 +287,10 @@ class Room1(Room):
     def __init__(self):
         Room.__init__(self)
 
-        walls = [[0, 0, 20, 800, blue_grey],
-                 [780, 0, 20, 800, blue_grey],
-                 [20, 0, 760, 20, blue_grey],
-                 [20, 580, 760, 20, blue_grey]
+        walls = [[0, 0, 20, 900, blue_grey],
+                 [1580, 0, 20, 900, blue_grey],
+                 [0, 0, 1580, 20, blue_grey],
+                 [0, 880, 1580, 20, blue_grey]
                 ]
 
         for item in walls:
@@ -303,8 +298,8 @@ class Room1(Room):
             self.wall_list.add(wall)
 
     def update(self):
-        if len(self.coins_list) < 30:
-            self.spawn_coins(20)
+        if len(self.coins_list) < 220:
+            self.spawn_coins(8)
 
         self.ogre.pick_target(self)
         self.ogre.chase(self)
@@ -321,7 +316,7 @@ class Room1(Room):
                 self.movingsprites.remove(goblin)
                 self.age_deaths += 1
                 log("a goblin died of old age")
-            elif goblin.ticks_without_food > 150:
+            elif goblin.ticks_without_food > 250:
                 self.coins_on_death.append(goblin.lifetime_coins)
                 self.death_ages.append(goblin.age)
                 self.goblins.remove(goblin)
@@ -331,14 +326,14 @@ class Room1(Room):
             else:
                 goblin.do_thing(self)
                 goblin.move(self.wall_list, self.goblins)
-                if goblin.coins_collected > 10:
+                if goblin.coins_collected > 20:
                     goblin.reproduce(self)
                 self.movingsprites.add(goblin)
 
 
     def spawn_coins(self, num_coins):
         for coin in range(num_coins):
-            coin = Coin(random.randrange(21, 779), random.randrange(21, 579))
+            coin = Coin(random.randrange(21, 1579), random.randrange(21, 879))
             self.coins_list.add(coin)
 
 
@@ -350,7 +345,7 @@ def gen_goblin_genes():
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode([800, 600])
+    screen = pygame.display.set_mode([1600, 900])
     pygame.display.set_caption('There\'s always a bigger fish Test')
 
     rooms = []
@@ -387,7 +382,7 @@ def main():
                     go = True
 
                 elif event.key == pygame.K_SPACE:
-                    current_room.spawn_coins(50)
+                    current_room.spawn_coins(200)
 
         if go:
             current_room.update()
